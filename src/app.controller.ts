@@ -1,5 +1,6 @@
-import { Controller, Get } from '@nestjs/common';
+import { Body, Controller, Get, Post } from '@nestjs/common';
 import { AppService } from './app.service';
+import { PostIntradayDataDto, PostStockDto } from './dto/appDto';
 
 @Controller()
 export class AppController {
@@ -12,5 +13,17 @@ export class AppController {
   @Get('/allstocks')
   findAll() {
     return this.appService.getAllStock();
+  }
+  @Post('/stock')
+  find(@Body() postStockDto: PostStockDto) {
+    return this.appService.getStock(postStockDto.id);
+  }
+  @Post('/intradaydata')
+  saveIntradayOhlc(@Body() postIntradayDataDto: PostIntradayDataDto) {
+    return this.appService.saveIntradayOhlc(
+      postIntradayDataDto.securityId,
+      postIntradayDataDto.exchangeSegment,
+      postIntradayDataDto.instrument,
+    );
   }
 }
