@@ -79,8 +79,7 @@ export class AppService {
             mapValues: ({ value }) => value.trim(),
           }),
         )
-        .on('data', (data: any) => {
-          // ! define type of CSV File
+        .on('data', (data: MasterSecurityListCsv) => {
           if (data) {
             const record: Partial<Security> = {
               exchange: data.SEM_EXM_EXCH_ID,
@@ -91,9 +90,7 @@ export class AppService {
               symbol: data.SEM_TRADING_SYMBOL,
               lotSize: Number(data.SEM_LOT_UNITS),
               customSymbol: data.SEM_CUSTOM_SYMBOL,
-              expiryDate: data.SEM_EXPIRY_DATE
-                ? new Date(data.SEM_EXPIRY_DATE)
-                : null,
+              expiryDate: data.SEM_EXPIRY_DATE ? data.SEM_EXPIRY_DATE : null,
               strikePrie: Number(data.SEM_STRIKE_PRICE),
               optionType:
                 data.SEM_OPTION_TYPE == 'XX' ? null : data.SEM_OPTION_TYPE,
@@ -151,4 +148,20 @@ type DhanIntradayDataResponse = {
   close: number[];
   volume: number[];
   start_Time: number;
+};
+
+type MasterSecurityListCsv = {
+  SEM_EXM_EXCH_ID: string;
+  SEM_SEGMENT: string;
+  SEM_SMST_SECURITY_ID: string;
+  SEM_INSTRUMENT_NAME: string;
+  SEM_EXPIRY_CODE: string;
+  SEM_TRADING_SYMBOL: string;
+  SEM_LOT_UNITS: string;
+  SEM_CUSTOM_SYMBOL: string;
+  SEM_EXPIRY_DATE: Date;
+  SEM_STRIKE_PRICE: string;
+  SEM_OPTION_TYPE: string;
+  SEM_TICK_SIZE: string;
+  SEM_EXPIRY_FLAG: string;
 };
