@@ -67,8 +67,10 @@ export class AppService {
     }
   }
   async saveSecurityListDB() {
+    //! Call This Everyday 9 AM
     const filePath = './tmp/script-master.csv';
     const batchSize = 1000;
+    await this.securityRepo.clear();
     await this.getSecurityListDhan();
     let recordsToStore: Partial<Security>[] = [];
     return new Promise((resolve, reject) => {
@@ -169,6 +171,10 @@ export class AppService {
       });
     }
     return 'Intraday Data Saved';
+  }
+  async clearIntradayData() {
+    //! Clear Intraday Data Every Morning 9 AM
+    await this.intradayRepo.clear();
   }
 }
 
