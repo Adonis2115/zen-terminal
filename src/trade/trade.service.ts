@@ -41,7 +41,7 @@ export class TradeService {
     order.optionType = optionType;
     order.tradeType = tradeType;
     order.strikePrie = strikePrie;
-    order.expiryDate = expiryDate;
+    order.expiryDate = securityDetail.expiryDate;
     order.contractSymbol = securityDetail.symbol;
     order.lot = lot;
     order.contractSecurity = securityDetail.securityID;
