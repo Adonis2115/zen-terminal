@@ -18,6 +18,10 @@ export class AppController {
   saveSecurityListDB() {
     return this.appService.saveSecurityListDB();
   }
+  @Get('/intradaydb')
+  saveIntradayOhlcDb() {
+    return this.appService.saveIntradayOhlcDb();
+  }
   @Post('/stock')
   find(@Body() postStockDto: PostStockDto) {
     return this.appService.getStock(postStockDto.id);

@@ -68,7 +68,7 @@ export class AppService {
   }
   async saveSecurityListDB() {
     const filePath = './tmp/script-master.csv';
-    const batchSize = 1000; // ! Number of Record to process at 1 time
+    const batchSize = 1000;
     await this.getSecurityListDhan();
     let recordsToStore: Partial<Security>[] = [];
     return new Promise((resolve, reject) => {
@@ -139,6 +139,70 @@ export class AppService {
     // Perform batch insert or any other suitable storage operation here
     await this.securityRepo.save(records);
   }
+  async saveIntradayOhlcDb() {
+    const indexSymbol = ['NIFTY', 'BANKNIFTY', 'FINNIFTY'];
+    const stockId = [1, 2, 3];
+    for (let i = 0; i < indexSymbol.length; i++) {
+      const symbolDetails = await this.securityRepo.findOne({
+        where: { symbol: indexSymbol[i], segment: 'I' },
+      });
+      const intradayData = await this.saveIntradayOhlc(
+        //! Make it dynamic
+        symbolDetails.securityID,
+        'IDX_I',
+        'INDEX',
+      );
+      intradayData.subscribe((data) => {
+        if (data.open) {
+          const record = new Intraday();
+          record.open = data.open[data.open.length - 1];
+          record.high = data.high[data.high.length - 1];
+          record.low = data.low[data.low.length - 1];
+          record.close = data.close[data.close.length - 1];
+          record.volume = data.volume[data.volume.length - 1];
+          record.time = timeStamp_convertor(
+            data.start_Time[data.start_Time.length - 1],
+          );
+          record.stockId = stockId[i];
+          this.intradayRepo.save(record);
+        }
+      });
+    }
+    return 'Intraday Data Saved';
+  }
+}
+
+function timeStamp_convertor(n: number) {
+  let offset1 = new Date().getTimezoneOffset();
+  let istOffset = 330;
+  n = n - (istOffset + offset1) * 60;
+  let a = ['1980', '01', '01', '05', '30', '00'];
+  let time = new Date(
+    Number(a[0]),
+    Number(a[1]) - 1,
+    Number(a[2]),
+    Number(a[3]),
+    Number(a[4]),
+    Number(a[5]),
+  );
+  time.setSeconds(n);
+  let year = time.getFullYear();
+  let month = ('0' + (time.getMonth() + 1)).slice(-2);
+  let day = ('0' + time.getDate()).slice(-2);
+  let hours = ('0' + time.getHours()).slice(-2);
+  let min = ('0' + time.getMinutes()).slice(-2);
+  let sec = ('0' + time.getSeconds()).slice(-2);
+  let strTime =
+    year + '-' + month + '-' + day + '-' + hours + '-' + min + '-' + sec;
+  let strArry = strTime.split('-');
+  return new Date(
+    Number(strArry[0]),
+    Number(strArry[1]) - 1,
+    Number(strArry[2]),
+    Number(strArry[3]),
+    Number(strArry[4]),
+    Number(strArry[5]),
+  );
 }
 
 type DhanIntradayDataResponse = {
@@ -147,7 +211,7 @@ type DhanIntradayDataResponse = {
   low: number[];
   close: number[];
   volume: number[];
-  start_Time: number;
+  start_Time: number[];
 };
 
 type MasterSecurityListCsv = {
