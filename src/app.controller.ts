@@ -14,6 +14,10 @@ export class AppController {
   findAll() {
     return this.appService.getAllStock();
   }
+  @Get('/savelist')
+  saveSecurityListDB() {
+    return this.appService.saveSecurityListDB();
+  }
   @Post('/stock')
   find(@Body() postStockDto: PostStockDto) {
     return this.appService.getStock(postStockDto.id);

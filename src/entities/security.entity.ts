@@ -1,24 +1,24 @@
 import { Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
 
-@Entity('intraday')
-export class Intraday {
+@Entity('security')
+export class Security {
   @PrimaryGeneratedColumn()
   id: number;
 
-  @Column({ type: 'string', nullable: false })
-  exchange: number;
-
-  @Column({ type: 'string', nullable: false })
-  segment: number;
-
-  @Column({ type: 'int', nullable: false })
-  securityID: number;
-
-  @Column({ type: 'string', nullable: false })
-  instrument: number;
+  @Column({ nullable: false })
+  exchange: string;
 
   @Column({ nullable: false })
-  expiryCode: boolean;
+  segment: string;
+
+  @Column({ nullable: false })
+  securityID: string;
+
+  @Column({ nullable: false })
+  instrument: string;
+
+  @Column({ nullable: false })
+  expiryCode: number;
 
   @Column({ nullable: false })
   symbol: string;
@@ -26,19 +26,19 @@ export class Intraday {
   @Column({ type: 'int', nullable: false })
   lotSize: number;
 
-  @Column({ nullable: true })
+  @Column({ nullable: false })
   customSymbol: string;
 
   @Column({ nullable: true })
   expiryDate: Date;
 
-  @Column({ nullable: true })
+  @Column({ type: 'float', nullable: true })
   strikePrie: number;
 
   @Column({ nullable: true })
   optionType: string;
 
-  @Column({ nullable: false })
+  @Column({ type: 'float', nullable: false })
   tickSize: number;
 
   @Column({ nullable: true })

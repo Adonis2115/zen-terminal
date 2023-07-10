@@ -5,6 +5,7 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { Intraday } from './entities/intraday.entity';
+import { Security } from './entities/security.entity';
 import { Stock } from './entities/stocks.entity';
 
 @Module({
@@ -19,10 +20,10 @@ import { Stock } from './entities/stocks.entity';
       port: Number(process.env.POSTGRES_PORT),
       username: process.env.POSTGRES_USER,
       password: process.env.POSTGRES_PASSWORD,
-      entities: [Stock, Intraday],
+      entities: [Stock, Intraday, Security],
       synchronize: true,
     }),
-    TypeOrmModule.forFeature([Stock, Intraday]),
+    TypeOrmModule.forFeature([Stock, Intraday, Security]),
     HttpModule,
   ],
   controllers: [AppController],
