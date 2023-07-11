@@ -7,6 +7,7 @@ import { createReadStream, createWriteStream } from 'fs';
 import { Observable, map } from 'rxjs';
 import { Repository } from 'typeorm';
 import { Intraday } from './entities/intraday.entity';
+import { Order } from './entities/order.entity';
 import { Security } from './entities/security.entity';
 import { Stock } from './entities/stocks.entity';
 
@@ -18,6 +19,8 @@ export class AppService {
     private readonly intradayRepo: Repository<Intraday>,
     @InjectRepository(Security)
     private readonly securityRepo: Repository<Security>,
+    @InjectRepository(Order)
+    private readonly orderRepo: Repository<Order>,
     private readonly httpService: HttpService,
   ) {}
   getHello(): string {
@@ -71,6 +74,8 @@ export class AppService {
     const filePath = './tmp/script-master.csv';
     const batchSize = 1000;
     await this.securityRepo.clear();
+    await this.intradayRepo.clear();
+    await this.orderRepo.clear();
     await this.getSecurityListDhan();
     let recordsToStore: Partial<Security>[] = [];
     return new Promise((resolve, reject) => {
@@ -171,10 +176,6 @@ export class AppService {
       });
     }
     return 'Intraday Data Saved';
-  }
-  async clearIntradayData() {
-    //! Clear Intraday Data Every Morning 9 AM
-    await this.intradayRepo.clear();
   }
 }
 

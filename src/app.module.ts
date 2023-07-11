@@ -25,7 +25,7 @@ import { TradeModule } from './trade/trade.module';
       entities: [Stock, Intraday, Security, Order],
       synchronize: true,
     }),
-    TypeOrmModule.forFeature([Stock, Intraday, Security]),
+    TypeOrmModule.forFeature([Stock, Intraday, Security, Order]),
     HttpModule,
     TradeModule,
   ],
