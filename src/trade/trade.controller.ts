@@ -1,4 +1,4 @@
-import { Body, Controller, Post } from '@nestjs/common';
+import { Body, Controller, Get, Post, Query } from '@nestjs/common';
 import { PostNewOrderDto } from 'src/dto/tradeDto';
 import { TradeService } from './trade.service';
 
@@ -17,5 +17,9 @@ export class TradeController {
       postNewOrderDto.expiryDate,
       postNewOrderDto.lot,
     );
+  }
+  @Get('/orders')
+  getOrders(@Query('type') type: 'pending' | 'success' | 'cancelled') {
+    return this.tradeService.getOrders(type);
   }
 }

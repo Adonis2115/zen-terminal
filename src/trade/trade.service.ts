@@ -34,21 +34,29 @@ export class TradeService {
         customSymbol: customContractSymbol,
       },
     });
-    const order = new Order();
-    order.indexSymbol = indexSymbol;
-    order.triggerLevel = triggerLevel;
-    order.candleAction = candleAction;
-    order.optionType = optionType;
-    order.tradeType = tradeType;
-    order.strikePrie = strikePrie;
-    order.expiryDate = securityDetail.expiryDate;
-    order.contractSymbol = securityDetail.symbol;
-    order.lot = lot;
-    order.contractSecurity = securityDetail.securityID;
-    order.status = 'pending';
-    this.orderRepo.save(order);
-    return order;
+    if (securityDetail) {
+      const order = new Order();
+      order.indexSymbol = indexSymbol;
+      order.triggerLevel = triggerLevel;
+      order.candleAction = candleAction;
+      order.optionType = optionType;
+      order.tradeType = tradeType;
+      order.strikePrie = strikePrie;
+      order.expiryDate = securityDetail.expiryDate;
+      order.contractSymbol = securityDetail.symbol;
+      order.lot = lot;
+      order.contractSecurity = securityDetail.securityID;
+      order.status = 'pending';
+      this.orderRepo.save(order);
+      return order;
+    } else {
+      return 'Wrong Order Inputs.';
+    }
   }
-
-  //todo Process Order
+  async getOrders(type) {
+    const orders = await this.orderRepo.find({
+      where: { status: type },
+    });
+    return orders;
+  }
 }
