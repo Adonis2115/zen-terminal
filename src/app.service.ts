@@ -1,5 +1,6 @@
 import { HttpService } from '@nestjs/axios';
 import { Injectable } from '@nestjs/common';
+import { Cron } from '@nestjs/schedule';
 import { InjectRepository } from '@nestjs/typeorm';
 import axios from 'axios';
 import * as csvParser from 'csv-parser';
@@ -69,7 +70,9 @@ export class AppService {
       return error;
     }
   }
+  @Cron('0 55 8 * *  1-5')
   async saveSecurityListDB() {
+    console.log('Daily');
     //! Call This Everyday 9 AM
     const filePath = './tmp/script-master.csv';
     const batchSize = 1000;
@@ -176,6 +179,10 @@ export class AppService {
       });
     }
     return 'Intraday Data Saved';
+  }
+  @Cron('0 */1 9-16 * * *')
+  async check() {
+    this.saveIntradayOhlcDb();
   }
 }
 
