@@ -53,7 +53,7 @@ export class TradeService {
       return 'Wrong Order Inputs.';
     }
   }
-  async getOrders(type) {
+  async getOrders(type: 'pending' | 'success' | 'cancelled') {
     const orders = await this.orderRepo.find({
       where: { status: type },
     });

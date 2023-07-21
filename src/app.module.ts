@@ -10,6 +10,7 @@ import { Order } from './entities/order.entity';
 import { Security } from './entities/security.entity';
 import { Stock } from './entities/stocks.entity';
 import { TradeModule } from './trade/trade.module';
+import { TradeService } from './trade/trade.service';
 
 @Module({
   imports: [
@@ -32,6 +33,6 @@ import { TradeModule } from './trade/trade.module';
     TradeModule,
   ],
   controllers: [AppController],
-  providers: [AppService],
+  providers: [AppService, TradeService],
 })
 export class AppModule {}

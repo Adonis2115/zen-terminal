@@ -6,11 +6,12 @@ import axios from 'axios';
 import * as csvParser from 'csv-parser';
 import { createReadStream, createWriteStream } from 'fs';
 import { Observable, map } from 'rxjs';
-import { Repository } from 'typeorm';
+import { Equal, Repository } from 'typeorm';
 import { Intraday } from './entities/intraday.entity';
 import { Order } from './entities/order.entity';
 import { Security } from './entities/security.entity';
 import { Stock } from './entities/stocks.entity';
+import { TradeService } from './trade/trade.service';
 
 @Injectable()
 export class AppService {
@@ -23,6 +24,7 @@ export class AppService {
     @InjectRepository(Order)
     private readonly orderRepo: Repository<Order>,
     private readonly httpService: HttpService,
+    private readonly tradeService: TradeService,
   ) {}
   getHello(): string {
     return 'Pong';
@@ -178,11 +180,23 @@ export class AppService {
         }
       });
     }
-    return 'Intraday Data Saved';
+    return 'Save Intraday Data to DB';
   }
-  @Cron('0 */1 9-16 * * *')
+  @Cron('0 */1 9-16 * * 1-5')
   async check() {
-    this.saveIntradayOhlcDb();
+    await this.saveIntradayOhlcDb();
+    this.processOrder();
+  }
+  async processOrder() {
+    const pendingOrders = await this.tradeService.getOrders('pending');
+    for (let i = 0; i < pendingOrders.length; i++) {
+      const candle = await this.intradayRepo.findOne({
+        where: { stockId: Equal(2) },
+        order: { id: 'DESC' },
+      });
+      //! Cases on touch, crossup and crossdown
+      console.log(candle);
+    }
   }
 }
 
